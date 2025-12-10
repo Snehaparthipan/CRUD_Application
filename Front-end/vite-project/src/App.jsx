@@ -73,10 +73,19 @@ function App() {
       setForm({ name: "", email: "", phoneNo: "", role: "" })
       setRefresh(!refresh)
       setPopup(false)
+      
     } catch (error) {
       console.log(error)
     }
 
+  }
+  async function Canceluser(){
+    try {
+      setPopup(false)
+      setForm({ name: "", email: "", phoneNo: "", role: "" })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
 
@@ -129,7 +138,7 @@ function App() {
               <input type="text" name='role' value={form.role} placeholder='Enter Employee Name' onChange={handlechange} />
 
               <button onClick={() => Edituser()}>Edit</button>
-              <button onClick={() => setPopup(false)}>cancel</button></div>
+              <button onClick={() => Canceluser()}>cancel</button></div>
           </div>
         )
       }
