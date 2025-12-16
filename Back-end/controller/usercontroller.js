@@ -10,6 +10,7 @@ const postUser = async(req,res)=>{
         console.log(error)
         res.status(500).json({message:"error in user creation"})
     }
+    
 }
 const getuser=async(req,res)=>{
     try{
@@ -45,4 +46,49 @@ const  deleteuser=async(req,res)=>{
         console.log(error)
     }
 }
-module.exports = {postUser,getuser,deleteuser,putUser}
+
+
+// jwt tokens
+
+const jwt=require("jsonwebtoken")
+const bcrypt=require('bcrypt')
+const SECRET_KEY="your secret key"
+const hashPassword=bcrypt.hashSync("admin123",10)
+
+const users=[{
+    id:1,
+    username:"admin",
+    password:hashPassword
+}]
+
+const genToken= async (req,res)=> {
+    
+        const {username,password}=req.body
+        const user=users.find(u=>u.username===username)
+        if(!user)return res.status(401).json({message:'invalid username'})
+        const isMatch=await bcrypt.compare(password,user.password)
+        if(!isMatch)return res.status(401).json({message:'invalid password'})
+            const token=jwt.sign({userID:user.id},SECRET_KEY,{expiresIn:'1h'})
+        res.json({message:"login successful",token})
+   
+}
+
+function verifyToken(req,res,next){
+    const authheader=req.headers["authorization"]
+    const token=authheader && authheader.split(' ')[1]
+    if(!token)return res.status(401).json({message:'no token provided'})
+        try {
+            const decode=jwt.verify(token,SECRET_KEY)
+            req.user=decode
+            next()
+            
+        } catch (error) {
+            console.log(error)
+        }
+}
+
+const getToken=(req,res)=>{
+    res.json({message:`welcome user ${req.user.userID}`,status:"assess granted"}
+    )
+}
+module.exports = {postUser,getuser,deleteuser,putUser,genToken,verifyToken,getToken}

@@ -1,5 +1,5 @@
 const express=require("express")
-const {postUser,getuser,deleteuser,putUser}=require("../controller/usercontroller")
+const {postUser,getuser,deleteuser,putUser,genToken,verifyToken,getToken}=require("../controller/usercontroller")
 const {addPost,getPost}=require("../controller/post.controller")
 const router=express.Router()
 router.post("/users",postUser)
@@ -8,4 +8,6 @@ router.delete("/del/:id",deleteuser)
 router.put("/new/:id",putUser)
 router.post("/post",addPost)
 router.get("/get",getPost)
+router.post('/login',genToken)
+router.get('/dash',verifyToken,getToken)
 module.exports=router
